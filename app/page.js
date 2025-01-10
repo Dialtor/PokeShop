@@ -11,6 +11,7 @@ import { Container, Box, Typography, CircularProgress } from '@mui/material';
 // Components
 import PaginationControls from '@/components/PaginationControls/PaginationControls';
 import PokemonList from '@/components/PokemonList/PokemonList';
+import Header from '@/components/Header/Header';
 
 const theme = createTheme({
   palette: {
@@ -21,7 +22,7 @@ const theme = createTheme({
 
 export default function HomePage() {
   // Lógica de paginación
-  const { limit, offset, handleNext, handlePrev } = usePagination(20);
+  const { limit, offset, handleNext, handlePrev } = usePagination(649);
 
   // Lógica de fetch pokemones (custom hook)
   const {
@@ -33,6 +34,9 @@ export default function HomePage() {
 
   return (
     <ThemeProvider theme={theme}>
+
+      <Header/>
+
       <Container sx={{ py:8, minWidth: '80vw' }}>
         <Typography variant="h4" gutterBottom>
           Pokémon Store
@@ -60,12 +64,12 @@ export default function HomePage() {
               offset={offset}
             />
 
-            <PaginationControls
+            {/* <PaginationControls
               offset={offset}
               isPreviousData={isPreviousData}
               onPrev={handlePrev}
               onNext={handleNext}
-            />
+            /> */}
           </>
         )}
       </Container>

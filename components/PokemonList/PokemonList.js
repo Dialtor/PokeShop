@@ -10,7 +10,7 @@ export default function PokemonList({ pokemons, offset }) {
       sx={{
         width: '100%',
         minWidth: 120,
-        backgroundColor: 'red',
+        backgroundColor: '#360f06',
         display: 'flex',
         flexWrap: 'wrap',
         gap: 2,
