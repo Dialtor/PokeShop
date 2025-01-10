@@ -1,95 +1,74 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+// React
+import React from 'react';
+// Hooks
+import { usePokemons } from '@/hooks/usePokemons';
+import { usePagination } from '@/hooks/usePagination';
+// MUI
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Container, Box, Typography, CircularProgress } from '@mui/material';
+// Components
+import PaginationControls from '@/components/PaginationControls/PaginationControls';
+import PokemonList from '@/components/PokemonList/PokemonList';
+
+const theme = createTheme({
+  palette: {
+    primary: { main: '#1976d2' },
+    secondary: { main: '#f50057' },
+  },
+});
+
+export default function HomePage() {
+  // Lógica de paginación
+  const { limit, offset, handleNext, handlePrev } = usePagination(20);
+
+  // Lógica de fetch pokemones (custom hook)
+  const {
+    data,
+    isLoading,
+    isError,
+    isPreviousData,
+  } = usePokemons(limit, offset);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <ThemeProvider theme={theme}>
+      <Container sx={{ py:8, minWidth: '80vw' }}>
+        <Typography variant="h4" gutterBottom>
+          Pokémon Store
+        </Typography>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+        {/* Loading */}
+        {isLoading && (
+          <Box display="flex" justifyContent="center" my={4}>
+            <CircularProgress />
+          </Box>
+        )}
+
+        {/* Error */}
+        {isError && (
+          <Typography color="error">
+            Ocurrió un error al cargar los pokemones.
+          </Typography>
+        )}
+
+        {/* Lista + Paginación */}
+        {!isLoading && !isError && (
+          <>
+            <PokemonList
+              pokemons={data?.results || []}
+              offset={offset}
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+            <PaginationControls
+              offset={offset}
+              isPreviousData={isPreviousData}
+              onPrev={handlePrev}
+              onNext={handleNext}
+            />
+          </>
+        )}
+      </Container>
+    </ThemeProvider>
   );
 }
