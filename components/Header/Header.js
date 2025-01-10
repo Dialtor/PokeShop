@@ -18,7 +18,6 @@ export default function Header() {
 
           <WalletSection/>
 
-          {/* Aquí va nuestro CartPopover */}
           <CartPopover />
         </Toolbar>
 

@@ -43,17 +43,17 @@ export default function PokemonCard({ index, name }) {
     addToCart(item);
   };
 
-  // Nuevo: reembolso
+
   const handleRefund = () => {
-    // 1. Encontrar el ítem en purchasedStore (para saber su precio local)
+
     const purchasedItem = getPurchasedItemById(index);
     if (!purchasedItem) {
       alert('Error: no se encontró el item en la lista de comprados.');
       return;
     }
-    // 2. Sumar a la wallet
+
     addFunds(purchasedItem.convertedPriceMXN);
-    // 3. Remover del store de purchased
+
     removeFromPurchased(index);
   };
 

@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Popover, Box, Typography, Button, IconButton } from '@mui/material';
+import { Popover, Box, Typography, Button, IconButton, Badge } from '@mui/material'; // Badge importado
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { useCartStore } from '@/stores/useCartStore';
 import { useWalletStore } from '@/stores/useWalletStore';
-
 import { usePurchasedStore } from '@/stores/usePurchasedStore';
 
 export default function CartPopover() {
@@ -27,14 +26,10 @@ export default function CartPopover() {
     setAnchorEl(null);
   };
 
-  const totalMXN = cartItems.reduce(
-    (acc, item) => acc + item.convertedPriceMXN,
-    0
-  );
+  const totalMXN = cartItems.reduce( (acc, item) => acc + item.convertedPriceMXN, 0 );
 
   const confirmPurchase = () => {
     if (balance >= totalMXN) {
-
       subtractFunds(totalMXN);
 
       cartItems.forEach((item) => markAsPurchased(item));
@@ -49,9 +44,16 @@ export default function CartPopover() {
 
   return (
     <Box>
-      <IconButton color="inherit" onClick={handleOpenPopover}>
-        <ShoppingCartIcon />
-      </IconButton>
+      {/* IconButton con Badge para mostrar el contador */}
+      <Badge
+        badgeContent={cartItems.length} // Contador dinámico
+        color="secondary"
+        overlap="circular" // Ajusta el posicionamiento
+      >
+        <IconButton color="inherit" onClick={handleOpenPopover}>
+          <ShoppingCartIcon />
+        </IconButton>
+      </Badge>
 
       <Popover
         open={open}
