@@ -1,37 +1,61 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Box, Typography } from '@mui/material';
-import { useCurrencies } from '@/hooks/useCurrencies'; // tu hook que trae las tasas
+import React from 'react';
+import { Box, Typography, Button } from '@mui/material';
+import { usePurchasedStore } from '@/stores/usePurchasedStore';
+import { useWalletStore } from '@/stores/useWalletStore';
+import { useCartStore } from '@/stores/useCartStore'; 
+import { usePokemonPrice } from '@/components/PokemonCard/hooks/usePokemonPrice';
 
 export default function PokemonCard({ index, name }) {
-  // Imagen del Pokémon
   const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index}.svg`;
 
-  // 1. Obtenemos las tasas de conversión (o null si aún cargando)
-  const { data: exchangeRates } = useCurrencies();
+  const {
+    randomPrice,
+    randomCurrency,
+    convertedPriceMXN,
+    isLoading,
+    isError,
+  } = usePokemonPrice();
 
-  // 2. Definimos las monedas posibles
-  const currencyCodes = ['USD', 'MXN', 'EUR', 'JPY', 'BRL'];
+  const { addToCart } = useCartStore();
 
-  // 3. Moneda aleatoria (una sola vez por card)
-  const [randomCurrency] = useState(() => {
-    const randomIndex = Math.floor(Math.random() * currencyCodes.length);
-    return currencyCodes[randomIndex];
-  });
+  // Comprados
+  const {
+    isPurchased,
+    removeFromPurchased,
+    getPurchasedItemById,
+  } = usePurchasedStore();
 
-  // 4. Precio aleatorio de 1 a 100 (o el rango que gustes)
-  const [randomPrice] = useState(() => {
-    const price = Math.random() * (100 - 1) + 1;
-    return Number(price.toFixed(2));
-  });
+  // Wallet
+  const { addFunds } = useWalletStore();
 
-  // 5. Convertir a MXN usando la fórmula
-  let convertedPriceMXN = 0;
-  if (exchangeRates) {
-    convertedPriceMXN =
-      randomPrice * (exchangeRates.MXN / exchangeRates[randomCurrency]);
-  }
+  const purchased = isPurchased(index);
+
+  const handleAddToCart = () => {
+    const item = {
+      id: index,
+      name,
+      price: randomPrice,
+      currency: randomCurrency,
+      convertedPriceMXN,
+    };
+    addToCart(item);
+  };
+
+  // Nuevo: reembolso
+  const handleRefund = () => {
+    // 1. Encontrar el ítem en purchasedStore (para saber su precio local)
+    const purchasedItem = getPurchasedItemById(index);
+    if (!purchasedItem) {
+      alert('Error: no se encontró el item en la lista de comprados.');
+      return;
+    }
+    // 2. Sumar a la wallet
+    addFunds(purchasedItem.convertedPriceMXN);
+    // 3. Remover del store de purchased
+    removeFromPurchased(index);
+  };
 
   return (
     <Box
@@ -54,7 +78,6 @@ export default function PokemonCard({ index, name }) {
         },
       }}
     >
-      {/* Imagen del Pokémon */}
       <Box
         component="img"
         src={imageUrl}
@@ -68,34 +91,43 @@ export default function PokemonCard({ index, name }) {
         }}
       />
 
-      {/* Índice (#) y nombre */}
-      <Typography variant="h6" component="div">
-        #{index}
-      </Typography>
-      <Typography
-        variant="h6"
-        component="div"
-        sx={{ textTransform: 'capitalize' }}
-      >
+      <Typography variant="h6">#{index}</Typography>
+      <Typography variant="h6" sx={{ textTransform: 'capitalize' }}>
         {name}
       </Typography>
 
-      {/* 6. Mostrar precios */}
-      {exchangeRates ? (
+      {isLoading && <Typography>Cargando precios...</Typography>}
+      {isError && <Typography color="error">Error al obtener tasas</Typography>}
+
+      {!isLoading && !isError && (
         <>
-          <Typography variant="subtitle1" sx={{ mt: 1 }}>
-            {/* Precio en la moneda aleatoria */}
-            ${randomPrice.toFixed(2)} {randomCurrency}
+          <Typography>
+            {randomPrice.toFixed(2)} {randomCurrency}
           </Typography>
-          <Typography variant="subtitle1">
-            {/* Conversión a MXN */}
-            Precio Local: ${convertedPriceMXN.toFixed(2)} MXN
+          <Typography>
+            Precio Local: {convertedPriceMXN.toFixed(2)} MXN
           </Typography>
+
+          {purchased ? (
+            <>
+              <Button variant="contained" disabled sx={{ mt: 2 }}>
+                Comprado
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleRefund}
+                sx={{ mt: 1 }}
+              >
+                Reembolsar
+              </Button>
+            </>
+          ) : (
+            <Button variant="contained" sx={{ mt: 2 }} onClick={handleAddToCart}>
+              Agregar al Carrito
+            </Button>
+          )}
         </>
-      ) : (
-        <Typography variant="subtitle2" sx={{ mt: 1 }}>
-          Cargando precios...
-        </Typography>
       )}
     </Box>
   );

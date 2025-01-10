@@ -7,8 +7,8 @@ export default function RootLayout({ children }) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <html lang="en">
-      <body>
+    <html lang="es">
+      <body style={{margin: 0}}>
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>

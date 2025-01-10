@@ -24,7 +24,6 @@ export default function PokemonList({ pokemons, offset }) {
       {pokemons.map((pokemon, idx) => (
         <PokemonCard
           key={pokemon.name}
-          // index será el ID de PokeAPI (1,2,3...) si parte desde 1
           index={offset + idx + 1}
           name={pokemon.name}
         />
