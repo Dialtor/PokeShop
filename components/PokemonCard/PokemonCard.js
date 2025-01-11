@@ -11,6 +11,7 @@ import { usePokemonPrice } from '@/components/PokemonCard/hooks/usePokemonPrice'
 
 export default function PokemonCard({ pokeId, name }) {
   const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokeId}.svg`;
+  const noImage = `./pokebola.png`;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -181,12 +182,12 @@ export default function PokemonCard({ pokeId, name }) {
           alignItems: 'center',
         }}
       >
-        <Box
-          component="img"
+        <img
           src={imageUrl}
           alt={name}
+          onError={(e) => (e.target.src = noImage)}
           className="pokemon-image"
-          sx={{
+          style={{
             width: '160px',
             height: '160px',
             objectFit: 'contain',

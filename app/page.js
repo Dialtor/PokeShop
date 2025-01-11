@@ -23,7 +23,7 @@ const theme = createTheme({
 
 export default function HomePage() {
   // Lógica de paginación
-  const { limit, offset, handleNext, handlePrev } = usePagination(200);
+  const { limit, offset, handleNext, handlePrev } = usePagination(1300);
 
   // Lógica de fetch pokemones (custom hook)
   const {
