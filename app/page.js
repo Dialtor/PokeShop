@@ -40,7 +40,7 @@ export default function HomePage() {
 
       <Container sx={{ py:8, minWidth: '80vw' }}>
         {/* <Typography variant="h4" gutterBottom>
-          Pokémon Store
+          PokeShop
         </Typography> */}
 
         {/* Loading */}

@@ -8,8 +8,11 @@ import {
   Popover,
   Box,
   IconButton,
+  Divider,
 } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useWalletStore } from '@/stores/useWalletStore';
 
 export default function WalletSection() {
@@ -18,7 +21,6 @@ export default function WalletSection() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
 
-  // Abrir/cerrar el Popover
   const handleOpenPopover = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -29,7 +31,6 @@ export default function WalletSection() {
 
   const open = Boolean(anchorEl);
 
-  // Lógica para agregar fondos personalizados
   const handleAddFunds = () => {
     addFunds(100);
   };
@@ -63,29 +64,40 @@ export default function WalletSection() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Box sx={{ padding: '1rem', width: 300 }}>
+        <Box sx={{ padding: 2, width: 320, display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography variant="h6" gutterBottom>
-            Saldo del monedero: $ {balance.toFixed(2)}
+            Saldo del monedero
+          </Typography>
+          <Typography variant="h4" color="primary" sx={{ fontWeight: 'bold' }}>
+            $ {balance.toFixed(2)}
           </Typography>
 
-          <Button
-            variant="contained"
-            onClick={handleAddFunds}
-            sx={{ mr: 1, mb: 1 }}
-          >
-            +100 MXN
-          </Button>
+          <Divider sx={{ my: 1 }} />
 
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleClearBalance}
-            sx={{ mb: 1 }}
-          >
-            Limpiar Balance
-          </Button>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={handleAddFunds}
+              fullWidth
+            >
+              +100 MXN
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteOutlineIcon />}
+              onClick={handleClearBalance}
+              fullWidth
+            >
+              Limpiar
+            </Button>
+          </Box>
 
-          <div>
+          <Divider sx={{ my: 1 }} />
+
+          <Box sx={{ display: 'flex', gap: 1 }}>
             <TextField
               label="Monto personalizado"
               variant="outlined"
@@ -94,12 +106,17 @@ export default function WalletSection() {
               onChange={(e) => setCustomAmount(e.target.value)}
               type="number"
               inputProps={{ min: '0', step: '0.01' }}
-              sx={{ mr: 1, width: '70%' }}
+              fullWidth
             />
-            <Button variant="contained" onClick={handleAddCustomFunds}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleAddCustomFunds}
+              sx={{ whiteSpace: 'nowrap' }}
+            >
               Agregar
             </Button>
-          </div>
+          </Box>
         </Box>
       </Popover>
     </Box>

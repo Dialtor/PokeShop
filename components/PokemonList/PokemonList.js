@@ -9,7 +9,7 @@ export default function PokemonList({ pokemons, offset }) {
   const [visiblePokemons, setVisiblePokemons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef(null);
-  const batchSize = 12; // Tamaño del lote a cargar
+  const batchSize = 12; // Tamaño del los items a cargar incialmente
 
   // Agregar ID único a cada Pokémon
   const pokemonsWithUniqueKey = React.useMemo(() => {
@@ -20,19 +20,19 @@ export default function PokemonList({ pokemons, offset }) {
     }));
   }, [pokemons, offset]);
 
-  // Filtrar Pokémon basándonos en el término de búsqueda
+  // Funcion de filtro de pokemons
   const filteredPokemons = React.useMemo(() => {
     return pokemonsWithUniqueKey.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [pokemonsWithUniqueKey, searchTerm]);
 
-  // Inicializar los primeros Pokémon visibles
+  // Setear los pokemons visibles en la primera instancia
   useEffect(() => {
     setVisiblePokemons(filteredPokemons.slice(0, batchSize));
   }, [filteredPokemons]);
 
-  // Función para cargar más Pokémon
+  // Cargar mas pokemons
   const loadMorePokemons = () => {
     if (isLoading || searchTerm !== '') return; // Evitar carga si hay búsqueda activa
     setIsLoading(true);
@@ -42,7 +42,7 @@ export default function PokemonList({ pokemons, offset }) {
       visiblePokemons.length + batchSize
     );
 
-    // Agregar solo Pokémon que no estén ya en visiblePokemons
+    // Agregar solo los pokemon que no estén ya en visiblePokemons
     const uniqueNextBatch = nextBatch.filter(
       (newPokemon) =>
         !visiblePokemons.some(
@@ -54,13 +54,13 @@ export default function PokemonList({ pokemons, offset }) {
       setTimeout(() => {
         setVisiblePokemons((prev) => [...prev, ...uniqueNextBatch]);
         setIsLoading(false);
-      }, 1000); // Simulación de tiempo de carga
+      }, 1000);
     } else {
       setIsLoading(false);
     }
   };
 
-  // Configuración del IntersectionObserver
+  // Configuración IntersectionObserver
   useEffect(() => {
     if (searchTerm !== '') return; // No configurar el observer si hay búsqueda activa
 
