@@ -9,6 +9,7 @@ import {
   Box,
   IconButton,
   Divider,
+  keyframes,
 } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -49,10 +50,24 @@ export default function WalletSection() {
     clearBalance();
   };
 
+  // Animación para el ícono del monedero
+  const pulseAnimation = keyframes`
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); color:rgb(241, 217, 223) }
+    100% { transform: scale(1); }
+  `;
+
   return (
     <Box>
       {/* Botón para abrir el Popover */}
-      <IconButton color="inherit" onClick={handleOpenPopover}>
+      <IconButton
+        color="inherit"
+        onClick={handleOpenPopover}
+        sx={{
+          animation: balance === 0 ? `${pulseAnimation} 1.3s infinite` : 'none',
+          animationTimingFunction: 'ease-in-out',
+        }}
+      >
         <AccountBalanceWalletIcon />
       </IconButton>
 
@@ -64,11 +79,23 @@ export default function WalletSection() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Box sx={{ padding: 2, width: 320, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box
+          sx={{
+            padding: 2,
+            width: 320,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Saldo del monedero
           </Typography>
-          <Typography variant="h4" color="textPrimary" sx={{ fontWeight: 'bold' }}>
+          <Typography
+            variant="h4"
+            color="textPrimary"
+            sx={{ fontWeight: 'bold' }}
+          >
             $ {balance.toFixed(2)} MXN
           </Typography>
 
@@ -90,7 +117,7 @@ export default function WalletSection() {
               startIcon={<DeleteOutlineIcon />}
               onClick={handleClearBalance}
               fullWidth
-              sx={{fontSize: 11}}
+              sx={{ fontSize: 11 }}
             >
               Eliminar Saldo
             </Button>
