@@ -10,6 +10,7 @@ import {
   IconButton,
   Divider,
   keyframes,
+  Alert,
 } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -21,6 +22,7 @@ export default function WalletSection() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Estado para manejar el mensaje de error
 
   const handleOpenPopover = (event) => {
     setAnchorEl(event.currentTarget);
@@ -41,8 +43,9 @@ export default function WalletSection() {
     if (!isNaN(parsedAmount) && parsedAmount > 0) {
       addFunds(parsedAmount);
       setCustomAmount('');
+      setErrorMessage(''); // Limpiar el mensaje de error si el monto es válido
     } else {
-      alert('Ingresa un monto válido mayor que 0');
+      setErrorMessage('Ingresa un monto válido mayor que 0');
     }
   };
 
@@ -125,7 +128,7 @@ export default function WalletSection() {
 
           <Divider sx={{ my: 1 }} />
 
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             <TextField
               label="Monto personalizado"
               variant="outlined"
@@ -144,6 +147,13 @@ export default function WalletSection() {
             >
               Agregar
             </Button>
+
+            {/* Mostrar el Alert si hay un mensaje de error */}
+            {errorMessage && (
+              <Alert severity="error" sx={{ mt: 1 }}>
+                {errorMessage}
+              </Alert>
+            )}
           </Box>
         </Box>
       </Popover>

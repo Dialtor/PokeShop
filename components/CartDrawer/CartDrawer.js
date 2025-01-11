@@ -12,21 +12,19 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded';
+import Swal from 'sweetalert2'; // Importa SweetAlert2
 
 import { useCartStore } from '@/stores/useCartStore';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { usePurchasedStore } from '@/stores/usePurchasedStore';
 
 export default function CartDrawer() {
-  // Carrito
   const { cartItems, removeFromCart, clearCart } = useCartStore();
-  // Monedero
   const { balance, subtractFunds } = useWalletStore();
-  // Marcador de comprados
   const { markAsPurchased } = usePurchasedStore();
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false); // Estado para mostrar el Alert
+  const [showAlert, setShowAlert] = useState(false);
 
   const GifVoidCart = './voidCart.gif';
 
@@ -45,12 +43,19 @@ export default function CartDrawer() {
       cartItems.forEach((item) => markAsPurchased(item));
       clearCart();
       setDrawerOpen(false);
+
+      // Mostrar SweetAlert de éxito
+      Swal.fire({
+        title: '¡Compra Exitosa!',
+        text: 'Tu compra se ha realizado correctamente.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+      });
     } else {
       setShowAlert(true); // Mostrar el alert si no hay suficiente saldo
     }
   };
 
-  // Actualizar la visibilidad del alert en función del saldo disponible
   useEffect(() => {
     setShowAlert(balance < totalMXN && cartItems.length > 0);
   }, [balance, totalMXN, cartItems]);
@@ -73,7 +78,7 @@ export default function CartDrawer() {
         onClose={() => toggleDrawer(false)}
         sx={{
           '& .MuiDrawer-paper': {
-            width: { xs: '100vw', sm: '60vw', md: '40vw', lg: '30vw' }, // Este es el tamaño del Drawer
+            width: { xs: '100vw', sm: '60vw', md: '40vw', lg: '30vw' },
           },
         }}
       >
@@ -238,7 +243,11 @@ export default function CartDrawer() {
                 variant="subtitle1"
                 sx={{ mt: 1, textAlign: 'right' }}
               >
-                Total estimado: <span style={{ fontWeight: 'bold' }}> $ {totalMXN.toFixed(2)} MXN</span>
+                Total estimado:{' '}
+                <span style={{ fontWeight: 'bold' }}>
+                  {' '}
+                  $ {totalMXN.toFixed(2)} MXN
+                </span>
               </Typography>
               <Typography
                 variant="subtitle2"
