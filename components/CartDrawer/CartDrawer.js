@@ -1,42 +1,45 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Popover, Box, Typography, Button, IconButton, Badge } from '@mui/material'; // Badge importado
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  Badge,
+  Drawer,
+} from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { useCartStore } from '@/stores/useCartStore';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { usePurchasedStore } from '@/stores/usePurchasedStore';
 
-export default function CartPopover() {
-  // 1. carrito
+export default function CartDrawer() {
+  // Carrito
   const { cartItems, removeFromCart, clearCart } = useCartStore();
-  // 2. monedero
+  // Monedero
   const { balance, subtractFunds } = useWalletStore();
-  // 3. la función para marcar como comprado
+  // Marcador de comprados
   const { markAsPurchased } = usePurchasedStore();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
-  const handleOpenPopover = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClosePopover = () => {
-    setAnchorEl(null);
+  const toggleDrawer = (open) => {
+    setDrawerOpen(open);
   };
 
-  const totalMXN = cartItems.reduce( (acc, item) => acc + item.convertedPriceMXN, 0 );
+  const totalMXN = cartItems.reduce(
+    (acc, item) => acc + item.convertedPriceMXN,
+    0
+  );
 
   const confirmPurchase = () => {
     if (balance >= totalMXN) {
       subtractFunds(totalMXN);
-
       cartItems.forEach((item) => markAsPurchased(item));
-
       clearCart();
-
-      handleClosePopover();
+      setDrawerOpen(false);
     } else {
       alert('No tienes suficiente saldo');
     }
@@ -44,25 +47,30 @@ export default function CartPopover() {
 
   return (
     <Box>
-      {/* IconButton con Badge para mostrar el contador */}
       <Badge
-        badgeContent={cartItems.length} // Contador dinámico
+        badgeContent={cartItems.length}
         color="secondary"
-        overlap="circular" // Ajusta el posicionamiento
+        overlap="circular"
       >
-        <IconButton color="inherit" onClick={handleOpenPopover}>
+        <IconButton color="inherit" onClick={() => toggleDrawer(true)}>
           <ShoppingCartIcon />
         </IconButton>
       </Badge>
 
-      <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClosePopover}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={() => toggleDrawer(false)}
       >
-        <Box sx={{ p: 2, minWidth: 300 }}>
+        <Box
+          sx={{
+            width: 300,
+            p: 2,
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <Typography variant="h6" gutterBottom>
             Carrito de Compras
           </Typography>
@@ -117,7 +125,7 @@ export default function CartPopover() {
             </>
           )}
         </Box>
-      </Popover>
+      </Drawer>
     </Box>
   );
 }
