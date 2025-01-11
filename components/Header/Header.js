@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -50,7 +50,8 @@ export default function Header() {
         }}
       >
         {/* Título */}
-        <Box onClick={scrollToTop}>
+        <Box onClick={scrollToTop} sx={{display: 'flex'}}>
+        <img src={LogoImage} width={80} height={'auto'} />
           <Typography
             variant="h6"
             sx={{
@@ -58,28 +59,44 @@ export default function Header() {
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
+              // Ocultar "PokeShop" en dispositivos pequeños
+              '@media (max-width: 600px)': {
+                display: 'none',
+              },
             }}
           >
-            <img src={LogoImage} width={80} height={'auto'} />
             PokeShop
           </Typography>
         </Box>
 
         {/* Mostrar saldo */}
         <Box sx={{ display: 'flex', width: 'auto', alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ mr: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              mr: 2,
+              // Ocultar "Saldo" en dispositivos pequeños
+              '@media (max-width: 640px)': {
+                display: 'none',
+              },
+            }}
+          >
             Saldo: $ {balance.toFixed(2)} MXN
           </Typography>
 
-          <IconButton
-            color="inherit"
-            onClick={toggleDrawer(true)}
+          <Typography
+            variant="h6"
             sx={{
-              animation: balance === 0 ? `${pulseAnimation} 1.5s infinite` : 'none',
+              mr: 2,
+              // Ocultar "Saldo" en dispositivos pequeños
+              '@media (min-width: 640px)': {
+                display: 'none',
+              },
             }}
           >
-           
-          </IconButton>
+             $ {balance.toFixed(2)} MXN
+          </Typography>
+
           <WalletSection />
 
           <CartDrawer />

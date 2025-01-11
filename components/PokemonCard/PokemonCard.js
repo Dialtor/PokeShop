@@ -194,6 +194,7 @@ export default function PokemonCard({ pokeId, name }) {
             userSelect: 'none',
             transition: 'all 0.4s ease',
           }}
+          loading='lazy'
         />
       </Box>
 
