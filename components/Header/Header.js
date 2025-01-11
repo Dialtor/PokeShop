@@ -85,7 +85,7 @@ export default function Header() {
           </Typography>
 
           <Typography
-            variant="h6"
+            variant="body1"
             sx={{
               mr: 2,
               // Ocultar "Saldo" en dispositivos pequeños
