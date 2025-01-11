@@ -38,9 +38,9 @@ export default function HomePage() {
       <Header/>
 
       <Container sx={{ py:8, minWidth: '80vw' }}>
-        <Typography variant="h4" gutterBottom>
+        {/* <Typography variant="h4" gutterBottom>
           Pokémon Store
-        </Typography>
+        </Typography> */}
 
         {/* Loading */}
         {isLoading && (
