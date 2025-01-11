@@ -7,8 +7,8 @@ import { useWalletStore } from '@/stores/useWalletStore';
 import { useCartStore } from '@/stores/useCartStore'; 
 import { usePokemonPrice } from '@/components/PokemonCard/hooks/usePokemonPrice';
 
-export default function PokemonCard({ index, name }) {
-  const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${index}.svg`;
+export default function PokemonCard({ pokeId, name }) {
+  const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokeId}.svg`;
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -27,11 +27,11 @@ export default function PokemonCard({ index, name }) {
 
   const { addFunds } = useWalletStore();
 
-  const purchased = isPurchased(index);
+  const purchased = isPurchased(pokeId);
 
   const handleAddToCart = () => {
     const item = {
-      id: index,
+      id: pokeId,
       name,
       price: randomPrice,
       currency: randomCurrency,
@@ -41,7 +41,7 @@ export default function PokemonCard({ index, name }) {
   };
 
   const handleRefund = () => {
-    const purchasedItem = getPurchasedItemById(index);
+    const purchasedItem = getPurchasedItemById(pokeId);
     if (!purchasedItem) {
       alert('Error: no se encontró el item en la lista de comprados.');
       return;
@@ -49,7 +49,7 @@ export default function PokemonCard({ index, name }) {
 
     addFunds(purchasedItem.convertedPriceMXN);
 
-    removeFromPurchased(index);
+    removeFromPurchased(pokeId);
   };
 
   useEffect(() => {
@@ -168,7 +168,7 @@ export default function PokemonCard({ index, name }) {
         component="div"
         sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}
       >
-        {name} <span style={{ fontWeight: 'lighter !important', color: '#8b8c8d' }}>#{index}</span>
+        {name} <span style={{ fontWeight: 'lighter !important', color: '#8b8c8d' }}>#{pokeId}</span>
       </Typography>
 
       {/* Botones y precios */}

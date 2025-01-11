@@ -9,23 +9,23 @@ export default function PokemonList({ pokemons, offset }) {
   const [visiblePokemons, setVisiblePokemons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef(null);
-  const batchSize = 7; // Tamaño del lote a cargar
+  const batchSize = 12; // Tamaño del lote a cargar
 
-  // Agregar ID a cada Pokémon
-  const pokemonsWithId = React.useMemo(() => {
+  // Agregar ID único a cada Pokémon
+  const pokemonsWithUniqueKey = React.useMemo(() => {
     return pokemons.map((pokemon, idx) => ({
       ...pokemon,
-      id: offset + idx + 1,
+      uniqueKey: `${offset + idx + 1}-${pokemon.name}`, // Clave única
+      id: offset + idx + 1, // ID para lógica de la UI
     }));
   }, [pokemons, offset]);
 
-
   // Filtrar Pokémon basándonos en el término de búsqueda
   const filteredPokemons = React.useMemo(() => {
-    return pokemonsWithId.filter((pokemon) =>
+    return pokemonsWithUniqueKey.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [pokemonsWithId, searchTerm]);
+  }, [pokemonsWithUniqueKey, searchTerm]);
 
   // Inicializar los primeros Pokémon visibles
   useEffect(() => {
@@ -42,9 +42,17 @@ export default function PokemonList({ pokemons, offset }) {
       visiblePokemons.length + batchSize
     );
 
-    if (nextBatch.length > 0) {
+    // Agregar solo Pokémon que no estén ya en visiblePokemons
+    const uniqueNextBatch = nextBatch.filter(
+      (newPokemon) =>
+        !visiblePokemons.some(
+          (visiblePokemon) => visiblePokemon.uniqueKey === newPokemon.uniqueKey
+        )
+    );
+
+    if (uniqueNextBatch.length > 0) {
       setTimeout(() => {
-        setVisiblePokemons((prev) => [...prev, ...nextBatch]);
+        setVisiblePokemons((prev) => [...prev, ...uniqueNextBatch]);
         setIsLoading(false);
       }, 1000); // Simulación de tiempo de carga
     } else {
@@ -76,7 +84,7 @@ export default function PokemonList({ pokemons, offset }) {
         observer.unobserve(currentRef);
       }
     };
-  }, [isLoading, searchTerm]); // Eliminado `visiblePokemons.length` para evitar dependencias innecesarias
+  }, [isLoading, searchTerm, visiblePokemons]); // Agregamos visiblePokemons como dependencia
 
   return (
     <Box
@@ -113,10 +121,10 @@ export default function PokemonList({ pokemons, offset }) {
         }}
       >
         {visiblePokemons.length > 0 ? (
-          visiblePokemons.map((pokemon, index) => (
+          visiblePokemons.map((pokemon) => (
             <PokemonCard
-              key={index} // Usar `pokemon.id` como clave única
-              index={pokemon.id}
+              key={pokemon.uniqueKey} // Clave única basada en `uniqueKey`
+              pokeId={pokemon.id}
               name={pokemon.name}
             />
           ))
@@ -126,7 +134,7 @@ export default function PokemonList({ pokemons, offset }) {
       </Box>
 
       {/* Loader y referencia para IntersectionObserver */}
-      {searchTerm === '' && ( // Mostrar sólo si no hay búsqueda activa
+      {searchTerm === '' && (
         <Box
           ref={observerRef}
           sx={{

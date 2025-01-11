@@ -1,19 +1,38 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Typography, TextField } from '@mui/material';
+import {
+  Button,
+  Typography,
+  TextField,
+  Popover,
+  Box,
+  IconButton,
+} from '@mui/material';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useWalletStore } from '@/stores/useWalletStore';
 
 export default function WalletSection() {
   const { balance, addFunds, clearBalance } = useWalletStore();
 
+  const [anchorEl, setAnchorEl] = useState(null);
   const [customAmount, setCustomAmount] = useState('');
 
+  // Abrir/cerrar el Popover
+  const handleOpenPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  // Lógica para agregar fondos personalizados
   const handleAddFunds = () => {
     addFunds(100);
   };
-
 
   const handleAddCustomFunds = () => {
     const parsedAmount = parseFloat(customAmount);
@@ -30,34 +49,59 @@ export default function WalletSection() {
   };
 
   return (
-    <div style={{ padding: '1rem', border: '1px solid #ccc' }}>
-      <Typography variant="h6" gutterBottom>
-        Saldo del monedero: $ {balance.toFixed(2)}
-      </Typography>
+    <Box>
+      {/* Botón para abrir el Popover */}
+      <IconButton color="inherit" onClick={handleOpenPopover}>
+        <AccountBalanceWalletIcon />
+      </IconButton>
 
-      <Button variant="contained" onClick={handleAddFunds} sx={{ mr: 1 }}>
-        +100 MXN
-      </Button>
+      {/* Popover */}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Box sx={{ padding: '1rem', width: 300 }}>
+          <Typography variant="h6" gutterBottom>
+            Saldo del monedero: $ {balance.toFixed(2)}
+          </Typography>
 
-      <Button variant="contained" color="error" onClick={handleClearBalance}>
-        Limpiar Balance
-      </Button>
+          <Button
+            variant="contained"
+            onClick={handleAddFunds}
+            sx={{ mr: 1, mb: 1 }}
+          >
+            +100 MXN
+          </Button>
 
-      <div style={{ marginTop: '1rem' }}>
-        <TextField
-          label="Monto personalizado"
-          variant="outlined"
-          size="small"
-          value={customAmount}
-          onChange={(e) => setCustomAmount(e.target.value)}
-          type="number"
-          inputProps={{ min: '0', step: '0.01' }}
-          sx={{ mr: 1 }}
-        />
-        <Button variant="contained" onClick={handleAddCustomFunds}>
-          Agregar Monto
-        </Button>
-      </div>
-    </div>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleClearBalance}
+            sx={{ mb: 1 }}
+          >
+            Limpiar Balance
+          </Button>
+
+          <div>
+            <TextField
+              label="Monto personalizado"
+              variant="outlined"
+              size="small"
+              value={customAmount}
+              onChange={(e) => setCustomAmount(e.target.value)}
+              type="number"
+              inputProps={{ min: '0', step: '0.01' }}
+              sx={{ mr: 1, width: '70%' }}
+            />
+            <Button variant="contained" onClick={handleAddCustomFunds}>
+              Agregar
+            </Button>
+          </div>
+        </Box>
+      </Popover>
+    </Box>
   );
 }

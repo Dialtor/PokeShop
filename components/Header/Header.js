@@ -54,10 +54,10 @@ export default function Header() {
             Saldo: $ {balance.toFixed(2)} MXN
           </Typography>
 
-          {/* Ícono de billetera */}
-          <IconButton color="inherit" onClick={toggleDrawer(true)}>
+          <WalletSection />
+          {/* <IconButton color="inherit" onClick={toggleDrawer(true)}>
             <AccountBalanceWalletIcon />
-          </IconButton>
+          </IconButton> */}
 
           {/* Popover del carrito */}
           <CartDrawer />
@@ -65,19 +65,6 @@ export default function Header() {
 
       </Toolbar>
 
-      {/* Drawer de la billetera */}
-      <Drawer
-        anchor="top" // Desliza desde arriba
-        open={isDrawerOpen}
-        onClose={toggleDrawer(false)}
-      >
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Mi Billetera
-          </Typography>
-          <WalletSection />
-        </Box>
-      </Drawer>
     </AppBar>
   );
 }

@@ -12,6 +12,7 @@ import { Container, Box, Typography, CircularProgress } from '@mui/material';
 import PaginationControls from '@/components/PaginationControls/PaginationControls';
 import PokemonList from '@/components/PokemonList/PokemonList';
 import Header from '@/components/Header/Header';
+import ScrollToTopButton from '@/components/ScrollToTopButton/ScrollToTopButton';
 
 const theme = createTheme({
   palette: {
@@ -72,6 +73,9 @@ export default function HomePage() {
             /> */}
           </>
         )}
+
+
+          <ScrollToTopButton />
       </Container>
     </ThemeProvider>
   );
