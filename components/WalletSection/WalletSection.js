@@ -32,7 +32,7 @@ export default function WalletSection() {
   const open = Boolean(anchorEl);
 
   const handleAddFunds = () => {
-    addFunds(100);
+    addFunds(500);
   };
 
   const handleAddCustomFunds = () => {
@@ -68,8 +68,8 @@ export default function WalletSection() {
           <Typography variant="h6" gutterBottom>
             Saldo del monedero
           </Typography>
-          <Typography variant="h4" color="primary" sx={{ fontWeight: 'bold' }}>
-            $ {balance.toFixed(2)}
+          <Typography variant="h4" color="textPrimary" sx={{ fontWeight: 'bold' }}>
+            $ {balance.toFixed(2)} MXN
           </Typography>
 
           <Divider sx={{ my: 1 }} />
@@ -77,12 +77,12 @@ export default function WalletSection() {
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button
               variant="contained"
-              color="primary"
+              color="inherit"
               startIcon={<AddCircleOutlineIcon />}
               onClick={handleAddFunds}
               fullWidth
             >
-              +100 MXN
+              +500 MXN
             </Button>
             <Button
               variant="contained"
@@ -90,8 +90,9 @@ export default function WalletSection() {
               startIcon={<DeleteOutlineIcon />}
               onClick={handleClearBalance}
               fullWidth
+              sx={{fontSize: 11}}
             >
-              Limpiar
+              Eliminar Saldo
             </Button>
           </Box>
 
