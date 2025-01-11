@@ -8,6 +8,7 @@ import {
   IconButton,
   Badge,
   Drawer,
+  Alert,
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
@@ -24,6 +25,7 @@ export default function CartDrawer() {
   const { markAsPurchased } = usePurchasedStore();
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false); // Estado para mostrar el Alert
 
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
@@ -40,8 +42,9 @@ export default function CartDrawer() {
       cartItems.forEach((item) => markAsPurchased(item));
       clearCart();
       setDrawerOpen(false);
+      setShowAlert(false); // Ocultar el alert si la compra se realiza
     } else {
-      alert('No tienes suficiente saldo');
+      setShowAlert(true); // Mostrar el alert si no hay suficiente saldo
     }
   };
 
@@ -113,6 +116,12 @@ export default function CartDrawer() {
               <Typography variant="subtitle2" sx={{ mt: 1 }}>
                 Saldo disponible: {balance.toFixed(2)} MXN
               </Typography>
+
+              {showAlert && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  No tienes suficiente saldo para realizar la compra.
+                </Alert>
+              )}
 
               <Button
                 variant="contained"

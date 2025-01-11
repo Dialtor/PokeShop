@@ -9,9 +9,8 @@ export default function PokemonList({ pokemons, offset }) {
   const [visiblePokemons, setVisiblePokemons] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef(null);
-  const batchSize = 12; // Tamaño del los items a cargar incialmente
-  const notFound = "./NotFound.png"
-
+  const batchSize = 12; // Tamaño del lote de items a cargar inicialmente
+  const notFound = './NotFound.png';
 
   // Agregar ID único a cada Pokémon
   const pokemonsWithUniqueKey = React.useMemo(() => {
@@ -22,19 +21,19 @@ export default function PokemonList({ pokemons, offset }) {
     }));
   }, [pokemons, offset]);
 
-  // Funcion de filtro de pokemons
+  // Función de filtro de Pokémon
   const filteredPokemons = React.useMemo(() => {
     return pokemonsWithUniqueKey.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [pokemonsWithUniqueKey, searchTerm]);
 
-  // Setear los pokemons visibles en la primera instancia
+  // Setear los Pokémon visibles en la primera instancia
   useEffect(() => {
     setVisiblePokemons(filteredPokemons.slice(0, batchSize));
   }, [filteredPokemons]);
 
-  // Cargar mas pokemons
+  // Cargar más Pokémon
   const loadMorePokemons = () => {
     if (isLoading || searchTerm !== '') return; // Evitar carga si hay búsqueda activa
     setIsLoading(true);
@@ -44,7 +43,7 @@ export default function PokemonList({ pokemons, offset }) {
       visiblePokemons.length + batchSize
     );
 
-    // Agregar solo los pokemon que no estén ya en visiblePokemons
+    // Agregar solo los Pokémon que no estén ya en visiblePokemons
     const uniqueNextBatch = nextBatch.filter(
       (newPokemon) =>
         !visiblePokemons.some(
@@ -86,7 +85,7 @@ export default function PokemonList({ pokemons, offset }) {
         observer.unobserve(currentRef);
       }
     };
-  }, [isLoading, searchTerm, visiblePokemons]); // Agregamos visiblePokemons como dependencia
+  }, [isLoading, searchTerm, visiblePokemons]); // visiblePokemons como dependencia
 
   return (
     <Box
@@ -122,22 +121,29 @@ export default function PokemonList({ pokemons, offset }) {
           justifyContent: 'center',
         }}
       >
-        {visiblePokemons.length > 0 ? (
-          visiblePokemons.map((pokemon) => (
-            <PokemonCard
-              key={pokemon.uniqueKey} // Clave única basada en `uniqueKey`
-              pokeId={pokemon.id}
-              name={pokemon.name}
-            />
-          ))
-        ) : (
-          <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        {searchTerm && filteredPokemons.length === 0 ? (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             <Typography variant="h3" color="text.secondary">
               No se encontraron resultados.
             </Typography>
 
-            <img src={notFound} width={500} height="auto" />
+            <img src={notFound} width={500} height="auto" alt="No se encontraron resultados" />
           </Box>
+        ) : (
+          visiblePokemons.map((pokemon) => (
+            <PokemonCard
+              key={pokemon.uniqueKey}
+              pokeId={pokemon.id}
+              name={pokemon.name}
+            />
+          ))
         )}
       </Box>
 

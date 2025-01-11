@@ -57,9 +57,15 @@ export default function PokemonCard({ pokeId, name }) {
   };
 
   const handleConfirmRefund = () => {
+    const purchasedItem = getPurchasedItemById(pokeId);
+    if (!purchasedItem) {
+      Swal.fire('Error', 'No se encontró el Pokémon en la lista de comprados.', 'error');
+      return;
+    }
+  
     Swal.fire({
       title: '¿Estás seguro?',
-      text: `¿Deseas reembolsar a ${name}?`,
+      text: `¿Deseas reembolsar a ${name} por $${purchasedItem.convertedPriceMXN.toFixed(2)} MXN? Se aplicaran los mismos cargos a su monedero por el valor inicial de la compra. `,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -77,7 +83,7 @@ export default function PokemonCard({ pokeId, name }) {
     Swal.fire({
       title: 'Comprado',
       // text: 'Este Pokémon ya ha sido comprado. Si lo deseas, puedes solicitar un reembolso usando el botón correspondiente.',
-      text: 'Este Pokémon ya ha sido comprado. No es posible volver adquirir este pokemon',
+      text: 'Este Pokémon ya ha sido comprado.',
       icon: 'info',
       confirmButtonColor: '#3085d6',
       confirmButtonText: 'Entendido',
@@ -250,14 +256,14 @@ export default function PokemonCard({ pokeId, name }) {
                 >
                   Comprado
                 </Button>
-                {/* <Tooltip title="Reembolsar">
+                <Tooltip title="Reembolsar">
                   <IconButton
                     color="primary"
                     onClick={handleConfirmRefund}
                   >
                     <ReplayIcon />
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip>
               </>
             ) : (
               <Button
