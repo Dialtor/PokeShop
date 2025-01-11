@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, IconButton, Tooltip } from '@mui/material';
+import ReplayIcon from '@mui/icons-material/Replay'; // Icono de reembolso
+import Swal from 'sweetalert2'; // Importar SweetAlert2
 import { usePurchasedStore } from '@/stores/usePurchasedStore';
 import { useWalletStore } from '@/stores/useWalletStore';
 import { useCartStore } from '@/stores/useCartStore'; 
@@ -43,13 +45,43 @@ export default function PokemonCard({ pokeId, name }) {
   const handleRefund = () => {
     const purchasedItem = getPurchasedItemById(pokeId);
     if (!purchasedItem) {
-      alert('Error: no se encontró el item en la lista de comprados.');
+      Swal.fire('Error', 'No se encontró el Pokémon en la lista de comprados.', 'error');
       return;
     }
 
     addFunds(purchasedItem.convertedPriceMXN);
 
     removeFromPurchased(pokeId);
+
+    Swal.fire('Reembolso exitoso', `El Pokémon ${name} ha sido reembolsado.`, 'success');
+  };
+
+  const handleConfirmRefund = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas reembolsar a ${name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, reembolsar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleRefund();
+      }
+    });
+  };
+
+  const handlePurchasedClick = () => {
+    Swal.fire({
+      title: 'Comprado',
+      // text: 'Este Pokémon ya ha sido comprado. Si lo deseas, puedes solicitar un reembolso usando el botón correspondiente.',
+      text: 'Este Pokémon ya ha sido comprado. No es posible volver adquirir este pokemon',
+      icon: 'info',
+      confirmButtonColor: '#3085d6',
+      confirmButtonText: 'Entendido',
+    });
   };
 
   useEffect(() => {
@@ -80,17 +112,13 @@ export default function PokemonCard({ pokeId, name }) {
           transform: 'perspective(600px) rotateY(15deg) scale(1.05)',
         },
         opacity: isVisible ? 1 : 0,
-        animation: isVisible
-          ? 'fade-in 0.8s ease-in-out forwards'
-          : 'none', // Aplica la animación solo si es visible
+        animation: isVisible ? 'fade-in 0.8s ease-in-out forwards' : 'none',
         '@keyframes fade-in': {
           '0%': {
             opacity: 0,
-            // transform: 'translateY(600px)',
           },
           '100%': {
             opacity: 1,
-            // transform: 'translateY(0px)',
           },
         },
       }}
@@ -168,7 +196,15 @@ export default function PokemonCard({ pokeId, name }) {
         component="div"
         sx={{ textTransform: 'capitalize', fontWeight: 'bold' }}
       >
-        {name} <span style={{ fontWeight: 'lighter !important', color: '#8b8c8d' }}>#{pokeId}</span>
+        {name}{' '}
+        <span
+          style={{
+            fontWeight: 'lighter !important',
+            color: '#8b8c8d',
+          }}
+        >
+          #{pokeId}
+        </span>
       </Typography>
 
       {/* Botones y precios */}
@@ -196,14 +232,33 @@ export default function PokemonCard({ pokeId, name }) {
               ${convertedPriceMXN.toFixed(2)} MXN
             </Typography>
             {purchased ? (
-              <Button
-                variant="contained"
-                color="error"
-                sx={{ width: 'auto', textTransform: 'none' }}
-                onClick={handleRefund}
-              >
-                Reembolsar
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  color="info"
+                  sx={{
+                    width: 'auto',
+                    textTransform: 'none',
+                    backgroundColor: '#292929',
+                    color: 'white',
+                    '&.Mui-disabled': {
+                      backgroundColor: '#6c6c6c',
+                      color: '#ffffff',
+                    },
+                  }}
+                  onClick={handlePurchasedClick}
+                >
+                  Comprado
+                </Button>
+                {/* <Tooltip title="Reembolsar">
+                  <IconButton
+                    color="primary"
+                    onClick={handleConfirmRefund}
+                  >
+                    <ReplayIcon />
+                  </IconButton>
+                </Tooltip> */}
+              </>
             ) : (
               <Button
                 variant="contained"
