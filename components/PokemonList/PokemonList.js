@@ -10,6 +10,8 @@ export default function PokemonList({ pokemons, offset }) {
   const [isLoading, setIsLoading] = useState(false);
   const observerRef = useRef(null);
   const batchSize = 12; // Tamaño del los items a cargar incialmente
+  const notFound = "./NotFound.png"
+
 
   // Agregar ID único a cada Pokémon
   const pokemonsWithUniqueKey = React.useMemo(() => {
@@ -129,7 +131,13 @@ export default function PokemonList({ pokemons, offset }) {
             />
           ))
         ) : (
-          <Typography>No se encontraron resultados.</Typography>
+          <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <Typography variant="h3" color="text.secondary">
+              No se encontraron resultados.
+            </Typography>
+
+            <img src={notFound} width={500} height="auto" />
+          </Box>
         )}
       </Box>
 

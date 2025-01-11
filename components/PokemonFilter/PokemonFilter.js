@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 
 export default function PokemonFilter({ pokemons }) {
+
+  const notFound = "./NotFound.png"
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = (event) => {
@@ -46,9 +48,13 @@ export default function PokemonFilter({ pokemons }) {
           ))}
         </Box>
       ) : (
-        <Typography variant="body2" color="text.secondary">
-          No se encontraron resultados.
-        </Typography>
+        <>
+          <Typography variant="body2" color="text.secondary">
+            No se encontraron resultados. asdasd
+          </Typography>
+
+          <img src={notFound} width={100} height={100} />
+        </>
       )}
     </Box>
   );
