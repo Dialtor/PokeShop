@@ -207,7 +207,7 @@ export default function PokemonCard({ index, name }) {
             ) : (
               <Button
                 variant="contained"
-                color="success"
+                color="inherit"
                 sx={{ width: 'auto', textTransform: 'none' }}
                 onClick={handleAddToCart}
               >

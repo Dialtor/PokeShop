@@ -14,6 +14,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useWalletStore } from '@/stores/useWalletStore';
 import CartDrawer from '@/components/CartDrawer/CartDrawer';
 import WalletSection from '@/components/WalletSection/WalletSection';
+import Link from 'next/link';
 
 
 export default function Header() {
@@ -28,14 +29,24 @@ export default function Header() {
   // Leer el balance del store
   const { balance } = useWalletStore();
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" sx={{backgroundColor: '#2e313b'}}>
       <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Título */}
+        <Box onClick={scrollToTop}>
         <Typography variant="h6" sx={{ width: 200, display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
           <img src={LogoImage} width={80} height={'auto'} />
           PokeShop
         </Typography>
+        </Box>
+
 
         {/* Mostrar saldo */}
         <Box sx={{ display: 'flex', width: 'auto', alignItems:'center' }}>
