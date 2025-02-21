@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rick and Morty + GraphQL (React + TypeScript + Vite)
 
-## Getting Started
+Este proyecto muestra una aplicación basada en **React** y **TypeScript** creada con **Vite**. Consume la **API de GraphQL** de [Rick and Morty](https://rickandmortyapi.com/) para listar personajes, permitir la búsqueda y el filtrado, así como guardar personajes favoritos en un estado global.
 
-First, run the development server:
+---
+
+## Tecnologías principales
+
+- **React 18**  
+- **TypeScript**  
+- **Vite** (para un entorno de desarrollo rápido)  
+- **Apollo Client** (para consumir GraphQL)  
+- **Tailwind CSS** (para estilos)  
+
+---
+
+## Características
+
+1. **Listado de Personajes**: Muestra todos los personajes disponibles en la API de Rick and Morty.  
+2. **Búsqueda y Filtro**: Permite filtrar personajes por nombre y/o especie.  
+3. **Favoritos**: Podrás marcar y desmarcar personajes como favoritos; se mostrarán en la sección "Starred Characters".  
+4. **Responsive**: Adaptación para diferentes tamaños de pantalla.
+
+---
+
+## Estructura del proyecto
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+├── src
+│   ├── api
+│   │   └── GET_CHARACTERS.ts   # Query GraphQL para obtener personajes
+│   ├── components
+│   │   ├── Sidebar
+│   │   │   ├── Sidebar.tsx     # Barra lateral con el buscador, filtros y listado
+│   │   │   ├── Filter.tsx      # Componente para filtrar por tipo de personaje
+│   │   │   ├── CharacterComponent.tsx
+│   │   │   └── FavoritesComponent.tsx
+│   │   └── ...
+│   ├── store
+│   │   └── useFavoriteStore.ts # Estado global (Zustand/Redux/Context, etc.)
+│   ├── App.tsx                 # Raíz de la aplicación
+│   ├── main.tsx                # Punto de entrada con createRoot
+│   └── ...
+├── public
+│   └── ...
+├── .eslintrc.cjs o eslint.config.js   # Configuración de ESLint
+├── tsconfig.json
+├── tsconfig.node.json
+├── tsconfig.app.json
+├── package.json
+├── README.md
+└── ...
